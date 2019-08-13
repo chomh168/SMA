@@ -2,16 +2,10 @@
 # 파일 구조
 **src**<br>
 └ **smtp**<br>
-
 └ **common**<br>
-<details>
-<summary>DETAIL</summary>
-<div markdown="1">
 &nbsp;&nbsp; └ authority .py<br>
 &nbsp;&nbsp; └ error_code_parser.py<br>
 &nbsp;&nbsp; └ time_range.py   <br>
-</div>
-</details>
 └ **DB**<br>
 &nbsp;&nbsp; └ **mongodb**<br>
 &nbsp;&nbsp; └ **mysql**<br>
