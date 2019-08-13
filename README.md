@@ -1,9 +1,11 @@
 
 # 파일 구조
 <details>
-<summary>**src**<br></summary>
-<div markdown="1">└ **smtp**<br></div>
-</details>
+<summary>
+**src**<br>
+</summary>
+<div markdown="1">
+└ **smtp**<br>
 └ **common**<br>
 &nbsp;&nbsp; └ authority .py<br>
 &nbsp;&nbsp; └ error_code_parser.py<br>
@@ -240,7 +242,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp; └ **statistics**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ upload_inverter_avg.py<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ upload_inverter_median.py<br>
-
+</div>
+</details>
 
 ## SMTP - 경고 발생시 이메일 전송
 
