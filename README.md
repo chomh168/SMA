@@ -1,6 +1,6 @@
 
 # 파일 구조
-**src**<br>
+<summary>**src**<br></summary>
 └ **smtp**<br>
 └ **common**<br>
 &nbsp;&nbsp; └ authority .py<br>
