@@ -1,7 +1,7 @@
 
 # 파일 구조
 <summary>**src**<br></summary>
-└ **smtp**<br>
+<div markdown="1">└ **smtp**<br></div>
 └ **common**<br>
 &nbsp;&nbsp; └ authority .py<br>
 &nbsp;&nbsp; └ error_code_parser.py<br>
