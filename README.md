@@ -1,232 +1,469 @@
-SMTP - 경고 발생시 이메일 전송
 
-사용라이브러리
-MIME라이브러리 사용
+# 파일 구조
+**src**
+└ **smtp**
+└ **common**
+&nbsp;&nbsp; └ authority .py
+&nbsp;&nbsp; └ error_code_parser.py
+&nbsp;&nbsp; └ time_range.py   
+└ **DB**
+&nbsp;&nbsp; └ **mongodb**
+&nbsp;&nbsp; └ **mysql**
+└ **FRAMEWORK**
+&nbsp;&nbsp; └ context .py
+&nbsp;&nbsp; └ handler .py
+&nbsp;&nbsp; └ interpreter .py
+&nbsp;&nbsp; └ opertater .py
+&nbsp;&nbsp; └ router .py
+└ **SERVER**
+&nbsp;&nbsp; └ **repository**
+&nbsp;&nbsp;&nbsp;&nbsp; └ **hstec_solar**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ hstec_solar_repsoitory.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ table_customer.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ table_daygeneration.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ table_daytotalgeneration.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ table_inverter.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ table_inverter_log.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ table_smslog.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ table_timegeneration.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ **mongo_solar**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_client_status.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_command_queue.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_conn_box_log.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_conn_box.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_customer.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_day_generation.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_day_total_generation.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_evenet_log.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_evenet_type.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_evenet.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_inverter.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_key_value.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_login_history.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_power_stations.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_remote_ip.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_sensor_name.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_sms_log.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_statics_inverter_avg.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_statics_inverter_median.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_temprature.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_time_generation.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collection_users.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ mongo_solar_repository.py
+&nbsp;&nbsp; └ **adapter**
+&nbsp;&nbsp;&nbsp;&nbsp; └ client_status_adapter.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ command_adapter.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ conn_box_adapter.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ customer_adapter.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ event_adapter.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ eventlog_adapter.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ generation_adapter.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ inverter_adapter.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ key_value_adapter.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ login_history_adapter.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ power_stations_adapter.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ remote_ip_adapter.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ sms_log_adapter.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ temperature_adapter.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ users_adapter.py
+&nbsp;&nbsp; └ **handler**
+&nbsp;&nbsp;&nbsp;&nbsp; └ **command**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ **v1**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ command_delete.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ command_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ command_post.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_d1_get.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ **customer**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ **v1**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ customer_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ **v2**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ customer_get.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ **event**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ **v1**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ event_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ event_type_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └  event_type_put.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ **eventlog**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ **v1**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ event_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ event_log_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └  event_notify_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └  event_notify_put.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ **exam**
+&nbsp;&nbsp;&nbsp;&nbsp; └ **generation**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ **v1**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ day_generation_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ **v2**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ day_generation_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ day_generation_sum_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ generation_realtime_local_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ generation_run_time_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ generation_summary_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ generation_summary_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ month_generation_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ month_generation_sum_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ time_generation_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ time_generation_sum_get.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ **hstec**
+&nbsp;&nbsp;&nbsp;&nbsp; └ **inverter**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ **v1**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ inverter_dckw_avg_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ inverter_dckw_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ inverter_dckw_sum_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ inverter_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ inverter_log_latest_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ inverter_realtime_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ inverter_status_realtime.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ inverter_time_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ **v2**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ inverter_avg_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ inverter_dckw_avg_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ inverter_dckw_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ inverter_dckw_median_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ inverter_dckw_sum_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ inverter_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ inverter_realtime_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ inverter_status_realtime.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ **v3**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ inverter_status_realtime.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ **keyvalue**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ **v1**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ keyvalue_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ keyvalue_post.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ keyvalue_put.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ **monitoring**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ **v1**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ monitoring_comm_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ monitoring_error_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ monitoring_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ monitoring_mini_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ monitoring_overview_get.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ **power_stations**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ **v1**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ power_stations_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ powerstation_list_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ **v2**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ power_stations_get.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ **search**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ **v1**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ autocomplete_list_get.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ **status**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ **v1**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ status_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ **v2**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ status_get.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ **users**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ **v1**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ users_info_get.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ users_get.py
+└ **batch**
+&nbsp;&nbsp; └ **collector**
+&nbsp;&nbsp;&nbsp;&nbsp; └ **hstec_solar_mongodb**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_admin.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_client_status.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_command_history.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_customer.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_event_type.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_event.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_heartbeat.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_inverter.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_inverterlog.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_key_value.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_login_history.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_power_stations.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_run_alert.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_server_status.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_timegeneration.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ **hstec_solar_mysql**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_client_status.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_conn_box.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_connboxlog.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_connboxvoltage.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_customer.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_daygeneration.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_daytotalgeneration.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_event_log.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_inverter.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_inverterlog.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_manager.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_remoteip.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_sensor_name.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_sensor_type.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_serviceman.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_smslog.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_temprature.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_timegeneration.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ collect_zipaddress.py
+&nbsp;&nbsp; └ **controller**
+&nbsp;&nbsp;&nbsp;&nbsp; └ authority_checker.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ check_command_complete.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ inverterlog .py
+&nbsp;&nbsp;&nbsp;&nbsp; └ mysql_total_generation.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ time_generation.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ **migration**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ **schedule**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_day_1.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_daygeneration_d01.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migartion_inverter_m10.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_minute_10.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_client_status.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_conn_box.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_connboxlog.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_connboxvoltage.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_customer.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_daygeneration.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_daytotalgeneration.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_event_log.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_inverter.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_inverterlog_legacy.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_inverterlog.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_inverterlog2.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_loop_daytotalgeneration.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_loop_inverterlog_legacy.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_loop_inverterlog.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_loop_timegeneration.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_remoteip.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_sensor_name.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_sensor_type.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_smslog.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_temprature.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_timegeneration.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_user.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ migration_zipaddress.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ **reliability**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ dup_inverter.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ heartbeat_apiserver.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ heartbeat .py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ reliability_collect_inverter.py
+&nbsp;&nbsp;&nbsp;&nbsp; └ **statistics**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ upload_inverter_avg.py
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └ upload_inverter_median.py
 
-파라미터
-받는 주소, 제목, 내용
 
-메일을 보내는 경우
--경보 발생 및 해제
--수집프로그램 다운 및 재가동
+## SMTP - 경고 발생시 이메일 전송
 
-================================
+-- 사용라이브러리
+- MIME라이브러리 사용
 
-COMMON - 인증 및 에러코드
 
-hstec_sms
+-- 파라미터
+- 받는 주소, 제목, 내용
 
-api_key = 'NCSAQFXDV4A9MSBR'
-api_secret = 'KW2EBGUWUFZ1TLUMZ0XFS8DBDFLDMPT8'
-sender_phone = '01025383553'
+
+-- 메일을 보내는 경우
+- 경보 발생 및 해제
+- 수집프로그램 다운 및 재가동
+
+
+
+## COMMON - 인증 및 에러코드
+
+#### hstec_sms
+
+* api_key = 'NCSAQFXDV4A9MSBR'
+* api_secret = 'KW2EBGUWUFZ1TLUMZ0XFS8DBDFLDMPT8'
+* sender_phone = '01025383553'
 
 sms - 송신 번호, 발전소 번호, 메시지 내용 설정
 
 sendSms - 문자 발송
 
+***
 
-authority.py - 인증관련
+### authority .py - 인증관련
 
 expireTime : 인증 만료 시간 (40분)
 
 Key를 만들고 Key를 10분 단위로 체크
 
-================================
 
-DB - 데이터 베이스 연결
+## DB - 데이터 베이스 연결
 
-mongodb 
+### mongodb 
 
-접속 주소 - mongodb://59.24.103.23:20100/solar
+- 접속 주소 - mongodb://59.24.103.23:20100/solar
 
-MongoClient을 이용하여 접속
+- MongoClient을 이용하여 접속
 
-database 확인 - database(collector)
+- database 확인 - database(collector)
 
-statics로 접근도 가능 - databases[collector]
+- statics 접근 - databases[collector]
+***
+### mysql
 
-mysql
+- 접속 주소 - mysql://stpm:stpm1234@121.159.30.15:3306/solar
 
-접속 주소 - mysql://stpm:stpm1234@121.159.30.15:3306/solar
+- parse_uri, connect 실행하여 접속
 
-parse_uri, connect 실행하여 접속
+- statics 접근
 
-statics로 접근도 가능
 
-================================
+## SERVER
 
-FRAMEWORK - 
+### repositories - db에 쿼리 및 삽입, 삭제
 
-context - 
+#### hstec_solar
 
-===================================
+- init : 기본적인 변환 함수 정의
 
-SERVER
+- hstec_solar_repository : HstecSolarRepository 클래스 안에 접근자 정의 
 
-*repositories - db에 쿼리 및 삽입, 삭제
+- table_customer : mysql db로부터 customer 테이블 데이터를 가져옴
 
-#hstec_solar
+- table_daygeneration : mysql db로부터 daygeneration 테이블 데이터를 가져옴 & 데이터를 삽입함
 
--init : 기본적인 변환 함수 정의
+- table_daytotalgeneration : mysql db로부터 daytotalgeneration 테이블 데이터를 가져옴 & 데이터를 삽입함(하나 혹은 대량)
 
--hstec_solar_repository : HstecSolarRepository 클래스 안에 접근자 정의 
+- table_inverter : mysql db로부터 inveter 테이블 데이터를 가져옴
 
--table_customer : mysql db로부터 customer 테이블 데이터를 가져옴
+- table_inveterlog : mysql db로부터 daytotalgeneration 테이블 데이터를 가져옴 & 데이터를 삽입함(하나 혹은 대량)
 
--table_daygeneration : mysql db로부터 daygeneration 테이블 데이터를 가져옴 & 데이터를 삽입함
+- table_smslog : mysql db로부터 smslog 테이블 데이터를 입력
 
--table_daytotalgeneration : mysql db로부터 daytotalgeneration 테이블 데이터를 가져옴 & 데이터를 삽입함(하나 혹은 대량)
+- table_timegeneration : mysql db로부터 timegeneration 테이블 데이터를 입력
 
--table_inverter : mysql db로부터 inveter 테이블 데이터를 가져옴
+***
+#### mongo_solar
 
--table_inveterlog : mysql db로부터 daytotalgeneration 테이블 데이터를 가져옴 & 데이터를 삽입함(하나 혹은 대량)
+-- init : 연결 및 컬렉션 생성 
 
--table_smslog : mysql db로부터 smslog 테이블 데이터를 입력
+- GetDataInDistributedCollection : 여러 컬랙션에 걸쳐서 쿼리
+- MakeCollectionNameAtTimeRange : 한시간 동안 컬랙션을 만듬
+- MakeCollectionNameAtDateAt : 하루동안 컬랙션을 만듬
 
--table_timegeneration : mysql db로부터 timegeneration 테이블 데이터를 입력
+-- collection_client_status :  정전 현황 컬랙션 데이터를 가져옴
 
+-- collection_command_queue : 명령 queue 삽입 삭제 참조
 
-#mongo_solar
+-- collection_conn_box_log : 접속반 로그 검색
 
--init : 연결 및 컬렉션 생성 
+-- collection_conn_box : 접속반 검색
 
-GetDataInDistributedCollection : 여러 컬랙션에 걸쳐서 쿼리
-MakeCollectionNameAtTimeRange : 시간기간을 컬랙션을 만듬
-MakeCollectionNameAtDateAt : 일기간 컬랙션을 만듬
+-- collection_customer : 고객정보 테이블 참조
 
--collection_client_status :  정전 현황 컬랙션 데이터를 가져옴
+-- collection_day_generation : 일일발전량 기간을 이용해서 참조
 
--collection_command_queue : 명령 queue 삽입 삭제 참조
+-- collection_day_total_generation : 누적발전량 기간을 이용해서 참조
 
--collection_conn_box_log : 접속반 로그 검색
+-- collection_event_log : 기간을 통해 이벤트 로그 검색
 
--collection_conn_box : 접속반 검색
+-- collection_event_type : 이벤트 타입을 분류(mail or sms)
 
--collection_customer : 고객정보 테이블 참조
+-- collection_event : 이벤트를 가져오거나 넣거나 이벤트에 대한 알림을 설정
 
--collection_day_generation : 일일발전량 기간을 이용해서 참조
+-- collection_inveter : 인버터 정보를 가져옴, 
 
--collection_day_total_generation : 누적발전량 기간을 이용해서 참조
+- GetInverter(query) : 단일
+- GetInverterV2(mcnos) : 여러개
 
--collection_event_log : 기간을 통해 이벤트 로그 검색
+-- collection_inverterlog : 인버터 로그 데이터를 가져옴
 
--collection_event_type : 이벤트 타입을 분류(mail or sms)
+- GetInverterLog(query) : 단일 로그 검색
+- GetInverterLogV2(mcno,dateAtFrom,dateAtTo) : 기간별 로그 검색
+- GetInverterLogV3(mcnos,dateAtFrom,dateAtTo) : 기간별 여러 발전소 검색
 
--collection_event : 이벤트를 가져오거나 넣거나 이벤트에 대한 알림을 설정
+-- collection_key_value : key(_id) 값을 통한 검색
 
--collection_inveter : 인버터 정보를 가져옴, 
+-- collection_login_history : 로그인 기록 검색, 생성, 삭제, 갱신
 
-GetInverter(query) : 단일
-GetInverterV2(mcnos) : 여러개
+-- collection_power_station : 발전소 검색
 
--collection_inverterlog : 인버터 로그 데이터를 가져옴
+-- collection_remote_ip : remote ip 검색
 
-GetInverterLog(query) : 단일 로그 검색
-GetInverterLogV2(mcno,dateAtFrom,dateAtTo) : 기간별 로그 검색
-GetInverterLogV3(mcnos,dateAtFrom,dateAtTo) : 기간별 여러 발전소 검색
+-- collection_SensorName : Sensorname 검색
 
--collection_key_value : key(_id) 값을 통한 검색
+-- collection_Sms_log : SMS 발송 내역 검색
 
--collection_login_history : 로그인 기록 검색, 생성, 삭제, 갱신
+-- collection_StaticsInverterAvg : 인버터 평균값을 검색
 
--collection_power_station : 발전소 검색
+-- collection_StaticsInverterMedian : 인버터 메디안 검색
 
--collection_remote_ip : remote ip 검색
+-- collection_temprature : 온도 검색
 
--collection_SensorName : Sensorname 검색
+-- collection_time_generation : 인버터 시간별 발전량 검색
 
--collection_Sms_log : SMS 발송 내역 검색
+-- collection_users : 고객정보를 검색
 
--collection_StaticsInverterAvg : 인버터 평균값을 검색
+- GetUsers(query) : 쿼리문을 통해 검색
+- GetUsersV2(userid,name,mcno) : 유저아이디 혹은 이름 혹은 발전소 번호를 통해 검색
 
--collection_StaticsInverterMedian : 인버터 메디안 검색
+-- mongo_solar_repository : 저장소에 접근할 수 있는 접근자 함수
 
--collection_temprature : 온도 검색
 
--collection_time_generation : 인버터 시간별 발전량 검색
+## Adapters
 
--collection_users : 고객정보를 검색
+-- client_status_adapter : collection_client_status 로부터 데이터를 가져옴(단일 혹은 맵)
 
-GetUsers(query) : 쿼리문을 통해 검색
-GetUsersV2(userid,name,mcno) : 유저아이디 혹은 이름 혹은 발전소 번호를 통해 검색
+- GetClientStatus : 단일 데이터 반환
+- GetClientStatusMap : 맵 데이터 반환
 
--mongo_solar_repository : 저장소에 접근할 수 있는 접근자 함수
+-- command_adapter : collection_command_queue 로부터 명령 커맨드를 검색, 삽입, 삭제
 
+-- conn_box_adapter : collection_conn_box_log 로부터 현재 접속반 데이터와 로그 검색
 
-*ClientStatusAdapter
+- GetConnBox : 현재 데이터 값
+- GetConnBoxLog : 데이터 로그값
 
--client_status_adapter : collection_client_status 로부터 데이터를 가져옴(단일 혹은 맵)
+-- customer_adapter : hstec_solar_repository 와 mongo_solar_repository 로부터 고객정보를 가져옴
 
-GetClientStatus : 단일 데이터 반환
-GetClientStatusMap : 맵 데이터 반환
+- GetCustomer : Mysql DB 로부터 정보를 가져옴
+- GetCustomerMongo : MongoDB 로부터 정보를 가져옴
 
--command_adapter : collection_command_queue 로부터 명령 커맨드를 검색, 삽입, 삭제
+-- event_adapter : collection_event_type 와 collection_event 로부터 이벤트를 가져옴
 
--conn_box_adapter : collection_conn_box_log 로부터 현재 접속반 데이터와 로그 검색
+-- eventlog_adapter : collection_event_log로 부터 로그를 검색 및 이벤트 입려
 
-GetConnBox : 현재 데이터 값
-GetConnBoxLog : 데이터 로그값
+-- generation_adapter : 생성값들을 검색
 
--customer_adapter : hstec_solar_repository 와 mongo_solar_repository 로부터 고객정보를 가져옴
+- GetDayGeneration : mysql db 검색
+- GetDayGenerations : mongo db 검색
+- GetDayGenerationV1 : mongo db 특정날 데이터 검색
+- GetDayTotalgeneration : 특정기간동안 전체 누적값 검색
+- GetDayTotalgenerationV1 : 특정날 전체 누적값 검색
+- GetDayTotalgenerationWithDateAtArr : 특정날까지 전체 누적값 검색
+- GetTimegenerations : 시간별 발전량 검색
 
-GetCustomer : Mysql DB 로부터 정보를 가져옴
-GetCustomerMongo : MongoDB 로부터 정보를 가져옴
+-- inverter_adapter : 인버터에 관련된 데이터 검색
 
--event_adapter : collection_event_type 와 collection_event 로부터 이벤트를 가져옴
+- GetInverterLog : Mysql DB 로부터 로그 검색
+- GetInverter : Mysql DB 로부터 인버터 정보 검색
+- GetInverterV2 : Mongo DB 로부터 인버터 정보 검색
+- GetInverterV3 : Mongo DB 로부터 특정 날의 정보 검색
+- GetInverterV4 : Mongo DB 로부터 여러 인버터 검색
+- GetInverterLogV2 : Mongo DB 로부터 로그 검색 
+- GetInverterLogV3 : MongoDB로부터 특정 기간동안 로그 검색
+- GetInverterLogV4 : MongoDB로부터 여러 발전소 특정 기간동안 로그 검색
+- GetStaticsInverterAvg : 인버터 평균 발전량 조회
+- GetStaticsInverterMedian : 인버터 메디안 조회
+- GetStaticsInverterAvgV1 : 특정날 평균 발전량 조회
 
--eventlog_adapter : collection_event_log로 부터 로그를 검색 및 이벤트 입려
+-- key_value_adapter : 키값을 통해 mongodb 검색
 
--generation_adapter : 생성값들을 검색
+-- login_history_adapter : mongo db로부터 로그인 기록 조회, 삽입, 갱신, 삭제
 
-GetDayGeneration : mysql db 검색
-GetDayGenerations : mongo db 검색
-GetDayGenerationV1 : mongo db 특정날 데이터 검색
-GetDayTotalgeneration : 특정기간동안 전체 누적값 검색
-GetDayTotalgenerationV1 : 특정날 전체 누적값 검색
-GetDayTotalgenerationWithDateAtArr : 특정날까지 전체 누적값 검색
-GetTimegenerations : 시간별 발전량 검색
+-- power_stations_adapter : 발전소 정보를 검색
 
--inverter_adapter : 인버터에 관련된 데이터 검색
+- GetPowerStations : mongo db로부터 단일 발전소 정보를 검색
+- GetPowerSattionsV1 : mongo db로부터 발전소 번호를 통해 검색
+- GetPowerSattionsV2 : mongo db로부터 발전소 번호를 통해 검색
+- GetNotAvaliableMcnos : 발전소 현재 상황 검색
 
-GetInverterLog : Mysql DB 로부터 로그 검색
-GetInverter : Mysql DB 로부터 인버터 정보 검색
-GetInverterV2 : Mongo DB 로부터 인버터 정보 검색
-GetInverterV3 : Mongo DB 로부터 특정 날의 정보 검색
-GetInverterV4 : Mongo DB 로부터 여러 인버터 검색
-GetInverterLogV2 : Mongo DB 로부터 로그 검색 
-GetInverterLogV3 : MongoDB로부터 특정 기간동안 로그 검색
-GetInverterLogV4 : MongoDB로부터 여러 발전소 특정 기간동안 로그 검색
-GetStaticsInverterAvg : 인버터 평균 발전량 조회
-GetStaticsInverterMedian : 인버터 메디안 조회
-GetStaticsInverterAvgV1 : 특정날 평균 발전량 조회
+-- remote_ip_adapter : remoteip 검색
 
--key_value_adapter : 키값을 통해 mongodb 검색
+-- sms_log_adapter : SMS log 입력(mysql,mongodb)
 
--login_history_adapter : mongo db로부터 로그인 기록 조회, 삽입, 갱신, 삭제
+-- temprature_adapter : 온도 정보 검색
 
--power_stations_adapter : 발전소 정보를 검색
+-- user_adapter : 유저 정보 검색
 
-GetPowerStations : mongo db로부터 단일 발전소 정보를 검색
-GetPowerSattionsV1 : mongo db로부터 발전소 번호를 통해 검색
-GetPowerSattionsV2 : mongo db로부터 발전소 번호를 통해 검색
-GetNotAvaliableMcnos : 발전소 현재 상황 검색
+- GetUsers : 쿼리문을 통해 검색
+- GetUsersV2 : 유저아이디, 이름, 발전소번호를 통해 검색
 
--remote_ip_adapter : remoteip 검색
 
--sms_log_adapter : SMS log 입력(mysql,mongodb)
 
--temprature_adapter : 온도 정보 검색
+# handler
 
--user_adapter : 유저 정보 검색
-
-GetUsers : 쿼리문을 통해 검색
-GetUsersV2 : 유저아이디, 이름, 발전소번호를 통해 검색
-
-
-
-*handler
-
-#authority
+## authority
 
 -authority_get : 로그인 영역 만약 로그인시 아이디를 찾을 수 없을시 로그인이 안되고 로그인시 로그인 기록
 
@@ -237,7 +474,7 @@ GetUsersV2 : 유저아이디, 이름, 발전소번호를 통해 검색
 -reauthority_get : loginHistroy를 통해 로그인 중일때 로그인을 허락하지 않는 규칙 정의 
 
 
-#command
+## command
 
 -command_delete : 명령어를 삭제함
 
@@ -248,13 +485,13 @@ GetUsersV2 : 유저아이디, 이름, 발전소번호를 통해 검색
 -migration_d1_get : migration_schedule_day1 shell 명령어를 통해 마이그레이션
 
 
-#customer
+## customer
 
 -v1.customer_get : CustomerGetV1Handler class는 mysql db로부터 사용자 정보를 가져온다
 
 -v2.customer_get : CustomerGetV2Handler class는 mongo db로부터 사용자 정보를 가져온다
 
-#event
+## event
 
 -v1.event_get : 입력 파라미터를 mcnos, all, userChecked, reutrnFormat을 변경시켜 이벤트를 반환한다
 
@@ -262,7 +499,7 @@ GetUsersV2 : 유저아이디, 이름, 발전소번호를 통해 검색
 
 -v1.event_type_put : eventtype을 정해서 어댑터에 넣어준다.
 
-#evnet_log
+## evnet_log
 
 -v1.event_get : 특정 기간동안 특정 발전소의 이벤트 로그를 반환해준다
 
@@ -272,7 +509,7 @@ GetUsersV2 : 유저아이디, 이름, 발전소번호를 통해 검색
 
 -v1.event_notify_put : events를 받아아서 userCheck를 true후 반환한다
 
-#generation_adapter
+## generation
 
 -v1.day_generation_get : mcno과 invno을 통해 mysql DB로부터 데이터를 가져온후 반환한다
 
@@ -294,7 +531,7 @@ GetUsersV2 : 유저아이디, 이름, 발전소번호를 통해 검색
 
 -v2.time_generation_sum_get : 시간별 발전량 계산, 모든 인버터 합산
 
-#inverter
+## inverter
 
 v1 mysql db로 부터 데이터를 가져옴
 
@@ -343,14 +580,14 @@ v3 실시간 에러체크
 203 미발전
 
 
-#keyvalue
+## keyvalue
 
 -v1.keyvalue : 키에 대한 값을 반환, 없을시 400이라는 코드를 반환
 
 -v1.keyvalue_put : key값에 대한 value를 갱신
 
 
-#monitoring
+## monitoring
 
 -v1.monitoring_comm_get : 발전중인지의 여부와 통신에러 여부를 반환
 
@@ -363,7 +600,7 @@ v3 실시간 에러체크
 -v1.monitoring_overview_get : 간략히 보기 페이지를 위한 데이터 반환 
 
 
-#power_station
+## power_station
 
 -v1.power_stations_get : 어댑터로부터 발전소 정보를 반환
 
@@ -371,11 +608,11 @@ v3 실시간 에러체크
 
 -v2.power_stations_get : mongo db로부터 받은 정보를 반환
 
-#seach
+## search
 
 -v1.autocomplete_list : 자동 완성이 되도록 데이터 목록을 반환
 
-#status
+## status
 
 -v1.status_get : 상태값에 대한 결과값을 변환
 
@@ -387,233 +624,226 @@ commStatus : 통신에러시 0
 powerstationStatus : 정상 0, ACKW값이 0일시 1
 commStatus : 통신에러시 0
 
-#users
+## users
 
 -v1.user_info_get : userid를 이용하여 발전소 정보를 반환하고 로그인 기록에 기록
 
 -v1.users_get : 입력 파라미터(userid,authority,name,mangager,mcno,isConnected)를 이용하여 유저정보 획득
 
-#framework 
+# framework 
 
 -router : url 정의 및 경로 정의
 
-===========================================
+***
 
-BATCH
+# BATCH
 
-#mysql
+-- run .sh : 배쉬 파일 정의
 
--upload_day_generation_mysql : mongo db로 부터 데이터를 받아 mysql db에 daykw값을 기록
+-- setting .py : DB 주소 및 log 파일 디렉토리 설정 
 
--upload_day_total_generation_mysql : mongo db로 부터 데이터를 받아 mysql db에 totkw값을 기록
+-- logging .py : 로그파일 위치 설정 및 전달 
 
--upload_invereterlog_mysql : mongo db로 부터 데이터를 받아 mysql db에 inverterlog값을 기록
+## storer
 
+### mysql
 
--save_new_inverter : 입력 받은 데이터를 바탕으로 mongodb에 인버터 정보를 생성
+- upload_day_generation_mysql : mongo db로 부터 데이터를 받아 mysql db에 daykw값을 기록
 
--update_client_status : 입력 받은 client_status 데이터를 갱신
+- upload_day_total_generation_mysql : mongo db로 부터 데이터를 받아 mysql db에 totkw값을 기록
 
--update_command_history : 입력 받은 command_history 데이터를 갱신
+- upload_invereterlog_mysql : mongo db로 부터 데이터를 받아 mysql db에 inverterlog값을 기록
+---
 
--update_conn_box : 입력 받은 conn_box 데이터를 갱신
+-- save_new_inverter : 입력 받은 데이터를 바탕으로 mongodb에 인버터 정보를 생성
 
--update_connboxvoltage : 입력 받은 connboxvoltage 데이터를 갱신
+-- update_client_status : 입력 받은 client_status 데이터를 갱신
 
--update_customer : 입력 받은 customer 데이터를 갱신
+-- update_command_history : 입력 받은 command_history 데이터를 갱신
 
--update_day_generation : 입력 받은 day_generation 데이터를 갱신, 없다면 삽입, 전체 일일발전량 합산 갱신
+-- update_conn_box : 입력 받은 conn_box 데이터를 갱신
 
--update_day_total_generation : 입력 받은 day_total_generation 데이터를 갱신, 없다면 삽입, 전체 일일발전량 합산 갱신
+-- update_connboxvoltage : 입력 받은 connboxvoltage 데이터를 갱신
 
--update_invereter_log : 입력 받은 inverterlog 데이터를 갱신
+-- update_customer : 입력 받은 customer 데이터를 갱신
 
--update_inverter : 입력 받은 inverter 정보를 mysql db에 migration
+-- update_day_generation : 입력 받은 day_generation 데이터를 갱신, 없다면 삽입, 전체 일일발전량 합산 갱신
 
--update_inverter2 : 입력 받은 inverter 정보를 mongodb에 갱신
+-- update_day_total_generation : 입력 받은 day_total_generation 데이터를 갱신, 없다면 삽입, 전체 일일발전량 합산 갱신
 
--update_inverterlog_fail : 인버터 로그 실패 기록
+-- update_invereter_log : 입력 받은 inverterlog 데이터를 갱신
 
--update_key_value : 입력 받은 key_value 데이터 갱신
+-- update_inverter : 입력 받은 inverter 정보를 mysql db에 migration
 
--update_login_history : 입력받은 login_history 데이터 갱신
+-- update_inverter2 : 입력 받은 inverter 정보를 mongodb에 갱신
 
--update_power_stations : 입력받은 powerstations 데이터 갱신
+-- update_inverterlog_fail : 인버터 로그 실패 기록
 
--update_remoteip : 입력받은 remoteip 데이터 갱신
+-- update_key_value : 입력 받은 key_value 데이터 갱신
 
--update_run_alert : 입력받은 runalert 데이터 갱신
+-- update_login_history : 입력받은 login_history 데이터 갱신
 
--update_sensor_name : 입력받은 sensor_name 데이터 갱신
+-- update_power_stations : 입력받은 powerstations 데이터 갱신
 
--update_sensor_type : 입력받은 sensor_type 데이터 갱신
+-- update_remoteip : 입력받은 remoteip 데이터 갱신
 
--update_server_status : 입력받은 server_status(서버가동여부) 데이터 갱신
+-- update_run_alert : 입력받은 runalert 데이터 갱신
 
--update_temperature : 입력받은 temperature 데이터를 mysql db에 migration
+-- update_sensor_name : 입력받은 sensor_name 데이터 갱신
 
--update_time_generation : 입력받은 time_generation 데이터를 갱신
+-- update_sensor_type : 입력받은 sensor_type 데이터 갱신
 
--update_zipaddress : mysql db로부터 받은 zipaddress 데이터 migration
+-- update_server_status : 입력받은 server_status(서버가동여부) 데이터 갱신
 
--upload_conn_box_log : mysql db로부터 받은 conn_box_log 데이터 migration
+-- update_temperature : 입력받은 temperature 데이터를 mysql db에 migration
 
--upload_daygeneration : mysql db로부터 받은 daygeneration 데이터 migration
+-- update_time_generation : 입력받은 time_generation 데이터를 갱신
 
--upload_daytotalgeneration : mysql db로부터 받은 daytotalgeneration 데이터 migration
+-- update_zipaddress : mysql db로부터 받은 zipaddress 데이터 migration
 
--upload_event_log : mysql db로부터 받은 event_log 데이터 migration
+-- upload_conn_box_log : mysql db로부터 받은 conn_box_log 데이터 migration
 
--upload_event : mysql db로부터 받은 event 데이터 migration
+-- upload_daygeneration : mysql db로부터 받은 daygeneration 데이터 migration
 
--upload_inverterlog : mysql db로부터 받은 inverterlog 데이터 migration
+-- upload_daytotalgeneration : mysql db로부터 받은 daytotalgeneration 데이터 migration
 
--upload_inverterlog2 : mysql db로부터 받은 inverterlog2 데이터 migration, 데이터가 없을시 0으로 초기화된 로그 생성
+-- upload_event_log : mysql db로부터 받은 event_log 데이터 migration
 
--upload_mysql_time_generation : mysql db로부터 받은 time_generation 데이터 migration
+-- upload_event : mysql db로부터 받은 event 데이터 migration
 
--upload_sms_log : mysql db로부터 받은 sms_log 데이터 migration
+-- upload_inverterlog : mysql db로부터 받은 inverterlog 데이터 migration
 
--upload_statistic_inverter_avg : statistics.inverter_avg 로부터 받은 평균값을 mongodb에 저장
+-- upload_inverterlog2 : mysql db로부터 받은 inverterlog2 데이터 migration, 데이터가 없을시 0으로 초기화된 로그 생성
 
--upload_statistic_inverter_median : statistics.inverter_median 로부터 받은 median값을 mongodb에 저장
+-- upload_mysql_time_generation : mysql db로부터 받은 time_generation 데이터 migration
 
--upload_timegeneration : mysql db로부터 받은 timegeneration 데이터 migration
+-- upload_sms_log : mysql db로부터 받은 sms_log 데이터 migration
 
+-- upload_statistic_inverter_avg : statistics.inverter_avg 로부터 받은 평균값을 mongodb에 저장
 
+-- upload_statistic_inverter_median : statistics.inverter_median 로부터 받은 median값을 mongodb에 저장
 
+-- upload_timegeneration : mysql db로부터 받은 timegeneration 데이터 migration
 
-#propergator
 
--alerter_collect : 수집된 데이터 발전소의 상태를 이메일 혹은 문자를 보냄
 
--alerter_heartbeat : 수집 서버에 대한 상태를 메일 혹은 문자로 보냄
 
+## propagator
 
-#processor
+-- alerter_collect : 수집된 데이터 발전소의 상태를 이메일 혹은 문자를 보냄
 
--check_authorty_expire : login_history로부터 시간을 받아 비교후 만료를 결정
+-- alerter_heartbeat : 수집 서버에 대한 상태를 메일 혹은 문자로 보냄
 
--process_inverter_avg : 로그로부터 합과 평균을 계산하여 context 형태로 반환
 
--process_inverter_log : 일일발전량을 12시에 리셋, inverter doc으로부터 inverterlog를 만듦
+## processor
 
--process_inverter_median : inverterlog로부터 median값을 계산하여 median문서에 저장
+-- check_authorty_expire : login_history로부터 시간을 받아 비교후 만료를 결정
 
--process_time_generation : 시간별 발전량 계산, 현재시간으로 부터 1시간을 뺀시간으로부터 발전량 계산
+-- process_inverter_avg : 로그로부터 합과 평균을 계산하여 context 형태로 반환
 
-조건1 : 0시일시 timekw 값은 0
-조건2 : timekw값이 0보다 작을시 0
+-- process_inverter_log : 일일발전량을 12시에 리셋, inverter doc으로부터 inverterlog를 만듦
 
-*reliability 
+-- process_inverter_median : inverterlog로부터 median값을 계산하여 median문서에 저장
 
--check_target_mcno : 발전소 상태중 사용안함과 진행중 이외의 상태 발전소를 반환
+-- process_time_generation : 시간별 발전량 계산, 현재시간으로 부터 1시간을 뺀시간으로부터 발전량 계산
 
--check_update_inverter : 인버터 에러 상태체크
+- 조건1 : 0시일시 timekw 값은 0
+- 조건2 : timekw값이 0보다 작을시 0
 
-상태1 : 발전   - 이상상태에서 발전변경시 알림, isRun 상태 변경
-상태2 : 발전중지 - 이상상태에서 발전변경시 알림(ACKW기준), isRun 상태 변경
-상태3 : 정전   - 상태값을 확인후 알림
-상태4 : 통신에러 - 60분간 미수집시 알림
-상태5 : 가동정지 - 20분 이상 발전중지시 알림
+### └ reliability 
 
--heartbeat : 수집프로그램이 정상 가동체크 및 내용 반환
+-- check_target_mcno : 발전소 상태중 사용안함과 진행중 이외의 상태 발전소를 반환
 
+-- check_update_inverter : 인버터 에러 상태체크
 
-*migration : mysql db로부터 받은 데이터를 migration에 저장
+- 상태1 : 발전   - 이상상태에서 발전변경시 알림, isRun 상태 변경
+- 상태2 : 발전중지 - 이상상태에서 발전변경시 알림(ACKW기준), isRun 상태 변경
+- 상태3 : 정전   - 상태값을 확인후 알림
+- 상태4 : 통신에러 - 60분간 미수집시 알림
+- 상태5 : 가동정지 - 20분 이상 발전중지시 알림
 
+-- heartbeat : 수집프로그램이 정상 가동체크 및 내용 반환
 
-#controller
 
--check_command_complete : reset 명령후 지정된 휴대번호로 리셋 완료 메시지를 보냄
+### └ migration : mysql db로부터 받은 데이터를 migration에 저장
 
-HstecSms.sendSms(010xxxxyyyy,message) 등록
 
--inverterlog : 로그 수집 절차, 절차중 에러발생시 step과 error 메시지를 통해 반환
+## controller
 
-SolarInverterCollector->SolarInverterLogCollector->InverterLogProcessor->
+-- check_command_complete : reset 명령후 지정된 휴대번호로 리셋 완료 메시지를 보냄
+
+- HstecSms.sendSms(010xxxxyyyy,message) 등록
+
+-- inverterlog : 로그 수집 절차, 절차중 에러발생시 step과 error 메시지를 통해 반환
+
+- SolarInverterCollector->SolarInverterLogCollector->InverterLogProcessor->
 InverterLogStorer->DayGenerationStorer->DayTotalGenerationStorer->MysqlInverterLogStorer
 
--mysql_total_generation : mysql total generation만 따로 저장하는 절차
+-- mysql_total_generation : mysql total generation만 따로 저장하는 절차
 
-SolarInverterCollector->SolarInverterLogCollector->InverterLogProcessor->
+- SolarInverterCollector->SolarInverterLogCollector->InverterLogProcessor->
 MysqlDayGenerationStorer->MysqlDayTotalGenerationStorer
 
--time_generation : 시간별 발전량을 저장하는 절차
+-- time_generation : 시간별 발전량을 저장하는 절차
 
-SolarInverterCollector->SolarInverterLogCollector->SolarTimeGenerationCollector
+- SolarInverterCollector->SolarInverterLogCollector->SolarTimeGenerationCollector
 ->TimeGenerationProcessor->TimeGenerationStorer->MysqlTimeGenerationStorer
 
-*statistics
+### └ statistics
 
--upload_inverter_avg : 특정기간동안의 평균값을 계산
+-- upload_inverter_avg : 특정기간동안의 평균값을 계산
 
--upload_inverter_median : 특정기간동안의 메디안값을 계산
+-- upload_inverter_median : 특정기간동안의 메디안값을 계산
 
-*reliability 
+### └ reliability 
 
--dup_inverter : 중복검사
+-- dup_inverter : 중복검사
 
--heartbeat : 수집프로그램 검사
+-- heartbeat : 수집프로그램 검사
 
-SolarServerStatusCollector->SolarHeartbeatCollector->SolarAdminCollector->
+- SolarServerStatusCollector->SolarHeartbeatCollector->SolarAdminCollector->
 HeartbeatProcessor->ServerStatusStorer->AlertHeartbeat
 
--reliability_collect_inverter : 문제가 발생한 발전소들을 Map에 저장하여 함수를 통해 반환
+-- reliability_collect_inverter : 문제가 발생한 발전소들을 Map에 저장하여 함수를 통해 반환
 
-KeyValueCollector.collect(context) - 검색하기 위한 key, 쿼리를 누적
-MakeMcnoMap : 문제가 생간 발전소 모음
+- KeyValueCollector.collect(context) - 검색하기 위한 key, 쿼리를 누적
+- MakeMcnoMap : 문제가 생간 발전소 모음
 
-*migration
+### └ migration
 
--migration_* : mysql db로부터 migration을 거쳐 mongo db에 데이터를 저장
+-- migration_* : mysql db로부터 migration을 거쳐 mongo db에 데이터를 저장
 
--schedule.migaration_day_1 : 하루마다 할 작업 정의 
+#### └ schedule.migaration_day_1 : 하루마다 할 작업 정의 
 
-migration_client_status
-migration_remoteip
-migration_user
-migration_sensor_name
-migration_sensor_type
-migration_temperature
-migartion_zippaddress
+- migration_client_status
+- migration_remoteip
+- migration_user
+- migration_sensor_name
+- migration_sensor_type
+- migration_temperature
+- migartion_zippaddress
 
--schedule.migaration_daygeneretion_d01 : 하루마다 일일발전량 누적발전량 실행
+#### └ schedule.migaration_daygeneretion_d01 : 하루마다 일일발전량 누적발전량 실행
 
-migration_daygeneration
-migration_daytotalgeneration
+- migration_daygeneration
+- migration_daytotalgeneration
 
--schedule.migration_inverter_m10 : 10분마다 인버터와 인버터로그 실행
+#### └ schedule.migration_inverter_m10 : 10분마다 인버터와 인버터로그 실행
 
-migration_inverter
-migration_inverterlog
+- migration_inverter
+- migration_inverterlog
 
--schedule.migration_minute_10 : 10분마다 할 작업정의
+#### └ schedule.migration_minute_10 : 10분마다 할 작업정의
 
-migration_event_log
-migration_smslog
-migration_conn_box
-migration_connboxvoltage
-migration_conboxlog
-
-
-#collector
-
-*hstec_solar_mongodb : mongodb에 쿼리를 위한 함수 정의
-
-*hstec_solar_mysql : mysqldb에 쿼리를 위한 함수 및 스키마 정의
+- migration_event_log
+- migration_smslog
+- migration_conn_box
+- migration_connboxvoltage
+- migration_conboxlog
 
 
+# collector
 
+-- hstec_solar_mongodb : mongodb에 쿼리를 위한 함수 정의
 
-
-
-
-
-
-
-
-
-
-
-
+-- hstec_solar_mysql : mysqldb에 쿼리를 위한 함수 및 스키마 정의
